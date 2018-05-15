@@ -1,0 +1,37 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=sonarqube
+      - POSTGRES_USER=sonarqube
+      - POSTGRES_PASSWORD=K2R77xrpwSezdYSOj11g
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - sonarqube-docker-network
+
+  sonarqube:
+    image: sonarqube
+    ports:
+      - 9000:9000
+    networks:
+      - sonarqube-docker-network
+    restart: always
+    links:
+      - db
+    depends_on:
+      - db
+    environment:
+      SONARQUBE_JDBC_USERNAME: sonarqube
+      SONARQUBE_JDBC_PASSWORD: K2R77xrpwSezdYSOj11g
+      SONARQUBE_JDBC_URL: jdbc:postgresql://db/sonarqube?useUnicode=true&characterEncoding=utf8&rewriteBatchStatements=true
+
+volumes:
+  db-data:
+
+networks:
+  sonarqube-docker-network:
+    driver: bridge
